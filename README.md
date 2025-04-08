@@ -1,50 +1,87 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/ZTMgf5TT)
-# 📘 Projeto Prático: Sistema de Entrega e Notificação com Design Patterns
+# Atividade Strategy & Adapter
 
-## 🌟 Objetivo
-Este projeto tem como objetivo praticar a implementação dos padrões de projeto **Adapter**, **Strategy** e **Observer** utilizando **Java com Spring Boot**, simulando um sistema de logística de uma plataforma de e-commerce.
+Este projeto demonstra o uso dos padrões **Strategy** e **Adapter** em uma API REST Spring Boot para cálculo de frete, com notificação via console.
 
 ---
 
-## 📖 Contexto
-Você foi contratado para desenvolver um módulo de **logística**. Esse módulo deve calcular valores de frete com diferentes transportadoras, integrar-se com uma transportadora externa e notificar o cliente e equipe interna após o processamento de uma entrega.
+## Tecnologias
+
+- Java 21
+- Spring Boot 3.7.7
+- Maven
 
 ---
 
-## 📊 Requisitos do Sistema
+## Pré‑requisitos
 
-### 1. Cálculo de Frete (**Strategy Pattern**)
-- O sistema deve oferecer três modalidades de entrega:
-  - Entrega Expressa
-  - Entrega Econômica
-  - Transportadora Terceirizada
-- Cada modalidade deve ter uma **regra de cálculo de frete diferente**.
-- A escolha da modalidade deve ser feita de forma **dinâmica**, via parâmetro na requisição.
+- JDK 21 instalado
+- Maven instalado
 
-### 2. Integração com Transportadora Externa (**Adapter Pattern**)
-- Uma transportadora externa fornece uma API que não segue os padrões do seu sistema.
-- Deve-se criar um **adaptador** que permita integrar a API externa sem alterar o funcionamento interno do sistema.
+## Endpoints
+GET /fretes
+Calcula o valor do frete de acordo com o peso e a modalidade escolhida.
 
----
+Query Parameters
 
-## 🚀 Funcionalidades Esperadas
-- Um endpoint HTTP que receba o **peso** e a **modalidade** da entrega.
-- Cálculo automático do frete com base na estratégia escolhida.
-- Uso do **adapter** para integrar com a transportadora externa (quando necessário).
-- Notificação automática de todos os observadores ao concluir a entrega.
+Parâmetro	Tipo	 Obrigatório	Descrição
+peso	    Double	    Sim	        Peso do pacote em kg.
+modalidade	String	    Sim	        Modalidade de frete. Valores válidos (case‑insensitive): 
+• Entrega economica
+• Entrega expressa
+• terceirizada
 
----
+Resposta de Sucesso
 
-## 🧠 Desafios Propostos
-- Implementar os três padrões de forma clara e funcional.
-- Permitir que novas estratégias, integrações ou notificadores possam ser adicionados **sem alterar o código existente**.
+Código: 200 OK
 
----
+Corpo: valor numérico (double) representando o preço do frete.
 
-## 📦 Entregáveis
-1. Código-fonte Java/Spring Boot com a implementação dos padrões.
-2. `README.md` com explicações sobre o uso dos padrões.
+Erros Comuns
 
----
+400 Bad Request — se faltar peso ou modalidade, ou se a modalidade for inválida.
 
+
+
+Exemplo de entrada e saída:
+
+Frete Econômico
+
+Entrada:
+
+curl -X GET "http://localhost:8080/fretes?peso=5.0&modalidade=Entrega%20economica"
+
+Resposta:
+
+0.25
+
+Notificação no console:
+
+Frete calculado: R$0.25 para modalidade Entrega economica
+
+
+## Arquitetura e Componentes
+
+Controller
+
+FreteController — expõe o endpoint /fretes.
+
+Service
+
+FreteService — orquestra as estratégias de cálculo e notificação.
+
+Estratégias (FreteStrategy):
+
+EntregaEconomica — 5% do peso.
+
+EntregaExpressa — 20% do peso.
+
+TransportadoraTercerizadaAdapter — adapta APIExternaTransportadora (peso × 7.5 + 15).
+
+Notificadores (Notificador):
+
+EmailNotificador — simula envio de e‑mail via System.out.println.
+
+Adapter
+
+TransportadoraTercerizadaAdapter — implementa FreteStrategy chamando a API externa.
 
